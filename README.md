@@ -125,6 +125,7 @@ pip install -r requirements.txt
 - `wfdb>=4.1.0` (for MIT-BIH data loading)
 - `neurokit2>=0.2.0` (for ECG/PPG processing)
 - `opencv-python>=4.8.0` (for video processing and rPPG extraction)
+- `shap>=0.42.0` (for explainable AI and feature importance)
 
 ### 3. Download MIT-BIH Dataset (Optional)
 
@@ -265,6 +266,8 @@ arrhythmia-detector/
 ├── predict.py                  # Prediction script
 ├── video_rppg_extractor.py     # Extract rPPG from video frames ⭐
 ├── real_time_detector.py       # Real-time video processing ⭐
+├── explainability.py            # Explainable AI (SHAP) ⭐
+├── explain_predictions.py      # XAI command-line tool ⭐
 ├── load_ppg_dataset.py         # PPG dataset loader (if needed)
 ├── test_mitbih.py              # Test script for MIT-BIH loading
 ├── requirements.txt            # Python dependencies
@@ -283,12 +286,56 @@ arrhythmia-detector/
 
 ## 🔬 Data Preprocessing Pipeline
 
-1. **Signal Loading**: Read ECG/PPG signal from file or array
+1. **Signal Loading**: Read ECG/PPG/rPPG signal from file, array, or video
 2. **R-R Interval Extraction**: Detect heartbeats and calculate intervals
 3. **HRV Feature Calculation**: Compute heart rate variability metrics
 4. **Statistical Feature Extraction**: Calculate signal statistics
 5. **Feature Normalization**: Standard scaling for ML input
 6. **Classification**: Binary prediction (normal vs arrhythmia)
+
+## 🧠 Explainable AI (XAI)
+
+The project includes **SHAP-based explainability** to understand model decisions:
+
+### Features
+
+- **Feature Importance**: Visualize which features drive predictions
+- **Prediction Explanations**: Understand why a specific prediction was made
+- **Feature Contributions**: See how each feature pushes towards normal or arrhythmia
+- **Visualizations**: Waterfall plots and feature importance charts
+
+### Usage
+
+```bash
+# Explain a prediction
+python explain_predictions.py --model model.pkl --signal data.csv --rate 360 --save explanation.png
+```
+
+```python
+# From Python code
+from explainability import ModelExplainer
+from model import ArrhythmiaPredictor
+
+# Load model and get explainer
+predictor = ArrhythmiaPredictor()
+predictor.load('model.pkl')
+explainer = predictor.get_explainer()
+
+# Explain a prediction
+features = preprocess_signal(signal_data, sampling_rate=360)
+shap_values, explanation = explainer.explain_prediction(features)
+
+# Visualize
+explainer.plot_waterfall(shap_values)
+explainer.plot_feature_importance(shap_values)
+```
+
+### What You Can Learn
+
+- **Top Contributing Features**: Which HRV metrics are most important
+- **Prediction Direction**: Features pushing towards arrhythmia vs normal
+- **Clinical Interpretability**: Understand model decisions in medical context
+- **Model Transparency**: Build trust with explainable predictions
 
 ## 🎯 Future Enhancements
 

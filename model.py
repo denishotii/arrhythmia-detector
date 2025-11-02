@@ -138,4 +138,14 @@ class ArrhythmiaPredictor:
         self.scaler = data['scaler']
         self.model_type = data['model_type']
         print(f"Model loaded from {filepath}")
+    
+    def get_explainer(self):
+        """
+        Get explainable AI explainer for this model.
+        
+        Returns:
+            ModelExplainer: XAI explainer instance
+        """
+        from explainability import ModelExplainer
+        return ModelExplainer(self.model, self.scaler, self.feature_names)
 

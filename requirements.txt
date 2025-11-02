@@ -6,4 +6,5 @@ matplotlib>=3.7.0
 wfdb>=4.1.0
 neurokit2>=0.2.0
 opencv-python>=4.8.0
+shap>=0.42.0
 
